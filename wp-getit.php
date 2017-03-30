@@ -34,18 +34,30 @@ function getit_activate()
     padding: 10px;
 }
 
+#getit_definition h2 {
+    font-size: 18px;
+    line-height: 1.5em;
+    margin-top: 0;
+    font-weight: bold;
+}
+
 #getit_definition strong {
+  color: rebeccapurple;
+}
+
+#getit_definition a {
   color: rebeccapurple;
 }
 
 #getit_terms {
     width: 100%;
     margin-bottom: 10px;
-    font-size: 18px !important;
+    font-size: 14px !important;
 }
 
 #getit_subtitle {
 margin-top: -10px; display:block;
+}
 }' );
     update_option( $getit_accent_color, '#ff1493' );
     update_option( $getit_link_style, 'border-bottom: 2px dashed #ff1493' );
@@ -158,7 +170,6 @@ function getit_plugin_options()
 
 </form>
 </div>
-
 <?php
 }
 
@@ -182,7 +193,7 @@ function getit_shortcode( $atts, $content = null ) {
         $content = $term;
     endif;
 
-	$link = '<a href="http://getitglossary.org/term/' . strtolower( str_replace( ' ', '+', $term ) ) . '" target="_getit">View the full definition at GetitGlossary.org &rarr;</a>';
+	$link = '<a href="http://getitglossary.org/term/' . strtolower( str_replace( ' ', '+', $term ) ) . '" target="_getit" class="getit-glossary">View the full definition at GetitGlossary.org &rarr;</a>';
 
     // retrieve definitions
     $transient_name = 'getit_term_' . $term;
@@ -215,7 +226,7 @@ function getit_shortcode( $atts, $content = null ) {
     // add a period to the definition if one is not already present
     $definition->definition .= ( '.' !== substr( $definition->definition, -1 ) ) ? '.' : '';
 
-    $output = '<a style="color: ' . $accent_color . '; ' . $link_style . '" href="#pop-' . $term . '" data-term="' . $term . '" data-definition=\'' . str_replace ( "\'", "&lsquo;", addslashes( $definition->definition) ) . '\' data-getit_link=\'' . $link . '\' title="Click to view the GetitGlossary.org definition of this term" >' . $content . '</a>';
+    $output = '<a style="color: ' . $accent_color . '; ' . $link_style . '" href="#pop-' . $term . '" data-term="' . $term . '" data-definition=\'' . str_replace ( "\'", "&lsquo;", addslashes( $definition->definition) ) . '\' data-getit_link=\'' . $link . '\' title="Click to view the GetitGlossary.org definition of this term" class="getit-term">' . $content . '</a>';
 
     return $output;
 }
@@ -286,23 +297,11 @@ public function widget( $args, $instance ) {
   // before and after widget arguments are defined by themes
   echo $args['before_widget'];
 
-  if ( ! empty( $title ) )
+  if ( ! empty( $title ) ){
     echo $args['before_title'] . $title . $args['after_title'];
-
-    echo "<p id=\"getit_subtitle\">from the <a href=\"http://getitglossary.org/\" target=\"_getit\">Get it Glossary &rarr;</a></p>";
-
-?>
-<!--
-<input id="getit_terms" class="awesomplete" list="mylist" />
-<datalist id="mylist">
-	<?php
-    	foreach( json_decode( $terms ) as $term ):
-        echo "<option value=\"$term->definition\">$term->term</option>\r\n";
-    endforeach;
-    ?>
-</datalist>
--->
-<?php
+  }
+    
+   echo "<p id=\"getit_subtitle\">from the <a href=\"http://getitglossary.org/\" target=\"_getit\" class=\getit-glossary\">Get it Glossary &rarr;</a></p>";
 
 
   // display drop down of Get it terms
@@ -314,10 +313,7 @@ public function widget( $args, $instance ) {
     echo "</select>";
 
     // inline style to highlight definition terms
-    echo "<div id=\"getit_definition\"><h2>Definition</h2>
-    <h2>[def-uh-nish-uh n]</h2>
-    <p><em>&ldquo;the act of defining, or of making something definite, distinct, or clear:
-We need a better definition of her responsibilities.&rdquo;</em></p>";
+    echo "<div id=\"getit_definition\"><h2>Definition</h2><em>&ldquo;the act of defining, or of making something definite, distinct, or clear: We need a better definition of her responsibilities.&rdquo;</em></div>";
 
   // lookup terms & definitions from Getit
     echo $args['after_widget'];
@@ -337,7 +333,7 @@ public function form( $instance ) {
 <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
 <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 </p>
-    <?php
+<?php
   }
 
   // Updating widget replacing old instances with new
