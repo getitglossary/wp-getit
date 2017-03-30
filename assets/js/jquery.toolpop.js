@@ -11,10 +11,7 @@
     // Ensure chaining works
     return this.each(function(i, el) {
 
-     console.log($(el).attr("data-tooltip", i));
       $el = $(el).attr("data-tooltip", i);
-
-      console.log($el.data('term'));
       
       // Make DIV and append to page 
       var $tooltip = $('<div class="tooltip" data-tooltip="' + i + '"><h2>' + $el.data('term') + '</h2><p>' + $el.data('definition') + '</p><p>' + $el.data('getit_link') + '</p><div class="arrow"></div></div>').appendTo($body);
